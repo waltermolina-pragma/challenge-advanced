@@ -7,17 +7,14 @@ import com.loanmanagement.infrastructure.adapters.risk.client.RiskEvaluationClie
 import com.loanmanagement.infrastructure.adapters.risk.dto.ExternalRiskRequest;
 import com.loanmanagement.infrastructure.adapters.risk.dto.ExternalRiskResponse;
 import com.loanmanagement.infrastructure.adapters.risk.mapper.ExternalRiskMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class ExternalRiskEvaluationService implements RiskEvaluationService {
     private final RiskEvaluationClient riskEvaluationClient;
     private final ExternalRiskMapper externalRiskMapper;
-
-    public ExternalRiskEvaluationService(RiskEvaluationClient riskEvaluationClient, ExternalRiskMapper externalRiskMapper) {
-        this.riskEvaluationClient = riskEvaluationClient;
-        this.externalRiskMapper = externalRiskMapper;
-    }
 
     @Override
     public RiskEvaluation evaluateRisk(LoanApplication application) {

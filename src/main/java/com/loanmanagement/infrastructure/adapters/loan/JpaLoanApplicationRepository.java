@@ -3,6 +3,7 @@ package com.loanmanagement.infrastructure.adapters.loan;
 import com.loanmanagement.domain.model.LoanApplication;
 import com.loanmanagement.domain.ports.LoanApplicationRepository;
 import com.loanmanagement.infrastructure.repositories.LoanApplicationJpaRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -11,12 +12,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
+@RequiredArgsConstructor
 public class JpaLoanApplicationRepository implements LoanApplicationRepository {
     private final LoanApplicationJpaRepository jpaRepository;
-
-    public JpaLoanApplicationRepository(LoanApplicationJpaRepository jpaRepository) {
-        this.jpaRepository = jpaRepository;
-    }
 
     @Override
     public LoanApplication save(LoanApplication loanApplication) {

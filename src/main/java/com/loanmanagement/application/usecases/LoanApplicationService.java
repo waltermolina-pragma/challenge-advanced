@@ -6,6 +6,7 @@ import com.loanmanagement.domain.model.RiskEvaluation;
 import com.loanmanagement.domain.ports.LoanApplicationRepository;
 import com.loanmanagement.domain.ports.RiskEvaluationService;
 import com.loanmanagement.infrastructure.controllers.dto.LoanApplicationRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -14,17 +15,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class LoanApplicationService {
-
     private final LoanApplicationRepository loanApplicationRepository;
     private final RiskEvaluationService riskEvaluationService;
-
-    public LoanApplicationService(
-            LoanApplicationRepository loanApplicationRepository,
-            RiskEvaluationService riskEvaluationService) {
-        this.loanApplicationRepository = loanApplicationRepository;
-        this.riskEvaluationService = riskEvaluationService;
-    }
 
     public LoanApplication createLoanApplication(LoanApplicationRequest request) {
         LoanApplication domain = new LoanApplication(
