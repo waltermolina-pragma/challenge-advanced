@@ -1,10 +1,10 @@
 package com.loanmanagement.application.usecases;
 
 import com.loanmanagement.domain.model.Customer;
+import com.loanmanagement.domain.model.LoanApplication;
 import com.loanmanagement.domain.model.RiskEvaluation;
 import com.loanmanagement.domain.ports.LoanApplicationRepository;
 import com.loanmanagement.domain.ports.RiskEvaluationService;
-import com.loanmanagement.domain.model.LoanApplication;
 import com.loanmanagement.infrastructure.controllers.dto.LoanApplicationRequest;
 import com.loanmanagement.infrastructure.controllers.dto.LoanApplicationResponse;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class LoanApplicationService {
@@ -29,36 +28,32 @@ public class LoanApplicationService {
         this.riskEvaluationService = riskEvaluationService;
     }
 
-    public LoanApplicationResponse createLoanApplication(LoanApplicationRequest request) {
+    public LoanApplication createLoanApplication(LoanApplicationRequest request) {
         LoanApplication domain = new LoanApplication(
-            UUID.randomUUID(),
-            request.customerId(),
-            request.requestedAmount(),
-            request.loanTerm(),
-            request.purpose()
+                UUID.randomUUID(),
+                request.customerId(),
+                request.requestedAmount(),
+                request.loanTerm(),
+                request.purpose()
         );
         domain.setCollateralType(request.collateralType());
         domain.setCollateralValue(request.collateralValue());
         domain.setAdditionalNotes(request.additionalNotes());
-        
-        LoanApplication saved = loanApplicationRepository.save(domain);
-        return LoanApplicationResponse.fromDomain(saved, saved.getCustomer(), saved.getRiskEvaluation());
+        return loanApplicationRepository.save(domain);
     }
 
-    public List<LoanApplicationResponse> findAll() {
-        return loanApplicationRepository.findByStatus("PENDING")
-                .stream()
-                .map(app -> LoanApplicationResponse.fromDomain(app, app.getCustomer(), app.getRiskEvaluation()))
-                .collect(Collectors.toList());
+    public List<LoanApplication> findAll() {
+        return loanApplicationRepository.findAll();
     }
 
     public Optional<LoanApplicationResponse> updateStatus(UUID id, String status) {
-        try {
+        /*try { Analizar agregar evaluación de riesgo para actualizar el estado
             LoanApplication updated = loanApplicationRepository.updateStatus(id, status);
             return Optional.of(LoanApplicationResponse.fromDomain(updated, updated.getCustomer(), updated.getRiskEvaluation()));
         } catch (IllegalArgumentException e) {
             return Optional.empty();
-        }
+        }*/
+        return null;
     }
 
     public void deleteById(UUID id) {
@@ -102,7 +97,7 @@ public class LoanApplicationService {
         }
 
         RiskEvaluation evaluation = riskEvaluationService.evaluateRisk(application);
-        
+
         if (evaluation.isApproved() && !evaluation.isHighRisk()) {
             application.setStatus("APPROVED");
             application.setApprovedAmount(application.getRequestedAmount());
@@ -135,14 +130,14 @@ public class LoanApplicationService {
         application.setStatus("APPROVED_WITH_CONDITIONS");
         application.setApprovedAmount(approvedAmount);
         application.setApprovalConditions(conditions);
-        
+
         return loanApplicationRepository.updateStatus(application.getId(), application.getStatus());
     }
 
     public boolean cancelApplication(UUID applicationId) {
         LoanApplication application = loanApplicationRepository.findById(applicationId)
                 .orElse(null);
-        
+
         if (application == null) {
             return false;
         }
@@ -174,8 +169,8 @@ public class LoanApplicationService {
         if (application.getCustomer() == null) {
             throw new IllegalArgumentException("El cliente es obligatorio");
         }
-        if (application.getRequestedAmount() == null || 
-            application.getRequestedAmount().compareTo(BigDecimal.ZERO) <= 0) {
+        if (application.getRequestedAmount() == null ||
+                application.getRequestedAmount().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("El monto solicitado debe ser mayor a cero");
         }
         if (application.getRequestedAmount().compareTo(new BigDecimal("1000000")) > 0) {

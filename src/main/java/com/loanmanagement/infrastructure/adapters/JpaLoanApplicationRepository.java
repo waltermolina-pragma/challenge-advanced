@@ -4,6 +4,7 @@ import com.loanmanagement.domain.model.LoanApplication;
 import com.loanmanagement.domain.ports.LoanApplicationRepository;
 import com.loanmanagement.infrastructure.repositories.LoanApplicationJpaRepository;
 import org.springframework.stereotype.Repository;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +32,11 @@ public class JpaLoanApplicationRepository implements LoanApplicationRepository {
     @Override
     public Optional<LoanApplication> findById(UUID id) {
         return jpaRepository.findById(id);
+    }
+
+    @Override
+    public List<LoanApplication> findAll() {
+        return jpaRepository.findAll();
     }
 
     @Override
