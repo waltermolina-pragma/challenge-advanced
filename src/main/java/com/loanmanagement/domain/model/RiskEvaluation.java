@@ -1,9 +1,12 @@
 package com.loanmanagement.domain.model;
 
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
+@Getter
 public class RiskEvaluation {
     private final UUID id;
     private final UUID loanApplicationId;
@@ -14,8 +17,8 @@ public class RiskEvaluation {
     private final String comments;
 
     public RiskEvaluation(UUID id, UUID loanApplicationId, String evaluationStatus,
-                         String riskLevel, String evaluator, LocalDateTime evaluationDate,
-                         String comments) {
+                          String riskLevel, String evaluator, LocalDateTime evaluationDate,
+                          String comments) {
         this.id = Objects.requireNonNull(id, "Risk evaluation ID cannot be null");
         this.loanApplicationId = Objects.requireNonNull(loanApplicationId, "Loan application ID cannot be null");
         this.evaluationStatus = Objects.requireNonNull(evaluationStatus, "Evaluation status cannot be null");
@@ -33,34 +36,6 @@ public class RiskEvaluation {
         if (evaluator.isBlank()) {
             throw new IllegalArgumentException("Evaluator cannot be blank");
         }
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public UUID getLoanApplicationId() {
-        return loanApplicationId;
-    }
-
-    public String getEvaluationStatus() {
-        return evaluationStatus;
-    }
-
-    public String getRiskLevel() {
-        return riskLevel;
-    }
-
-    public String getEvaluator() {
-        return evaluator;
-    }
-
-    public LocalDateTime getEvaluationDate() {
-        return evaluationDate;
-    }
-
-    public String getComments() {
-        return comments;
     }
 
     public boolean isApproved() {

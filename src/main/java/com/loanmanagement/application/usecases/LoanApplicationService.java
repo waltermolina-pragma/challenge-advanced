@@ -9,7 +9,6 @@ import com.loanmanagement.infrastructure.controllers.dto.LoanApplicationRequest;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -38,6 +37,7 @@ public class LoanApplicationService {
         domain.setCollateralType(request.collateralType());
         domain.setCollateralValue(request.collateralValue());
         domain.setAdditionalNotes(request.additionalNotes());
+        domain.validateApplication();
         return loanApplicationRepository.save(domain);
     }
 
@@ -47,13 +47,6 @@ public class LoanApplicationService {
 
     public void deleteById(UUID id) {
         deleteApplication(id);
-    }
-
-    public LoanApplication createApplication(LoanApplication application) {
-        validateApplication(application);
-        application.setStatus("PENDING_EVALUATION");
-        application.setApplicationDate(LocalDateTime.now());
-        return loanApplicationRepository.save(application);
     }
 
     public Optional<LoanApplication> findById(UUID id) {
@@ -70,12 +63,10 @@ public class LoanApplicationService {
 
     public LoanApplication evaluateAndApprove(UUID applicationId) {
         LoanApplication application = loanApplicationRepository.findById(applicationId)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "Solicitud de préstamo no encontrada: " + applicationId));
+                .orElseThrow(() -> new IllegalArgumentException("Solicitud de préstamo no encontrada: " + applicationId));
 
         if (!"PENDING_EVALUATION".equals(application.getStatus())) {
-            throw new IllegalStateException(
-                    "La solicitud no está en estado de evaluación: " + application.getStatus());
+            throw new IllegalStateException("La solicitud no está en estado de evaluación: " + application.getStatus());
         }
 
         Customer customer = application.getCustomer();
@@ -103,8 +94,7 @@ public class LoanApplicationService {
 
     public LoanApplication approveWithConditions(UUID applicationId, BigDecimal approvedAmount, String conditions) {
         LoanApplication application = loanApplicationRepository.findById(applicationId)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "Solicitud de préstamo no encontrada: " + applicationId));
+                .orElseThrow(() -> new IllegalArgumentException("Solicitud de préstamo no encontrada: " + applicationId));
 
         if (!"REVIEW_REQUIRED".equals(application.getStatus())) {
             throw new IllegalStateException(
@@ -152,26 +142,5 @@ public class LoanApplicationService {
         }
 
         loanApplicationRepository.deleteById(applicationId);
-    }
-
-    private void validateApplication(LoanApplication application) {
-        if (application.getCustomer() == null) {
-            throw new IllegalArgumentException("El cliente es obligatorio");
-        }
-        if (application.getRequestedAmount() == null ||
-                application.getRequestedAmount().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("El monto solicitado debe ser mayor a cero");
-        }
-        if (application.getRequestedAmount().compareTo(new BigDecimal("1000000")) > 0) {
-            throw new IllegalArgumentException(
-                    "El monto solicitado excede el límite máximo de $1,000,000");
-        }
-        if (application.getTermMonths() == null || application.getTermMonths() <= 0) {
-            throw new IllegalArgumentException("El plazo debe ser mayor a cero meses");
-        }
-        if (application.getTermMonths() > 360) {
-            throw new IllegalArgumentException(
-                    "El plazo no puede exceder 360 meses (30 años)");
-        }
     }
 }

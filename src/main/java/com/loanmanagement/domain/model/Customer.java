@@ -1,10 +1,13 @@
 package com.loanmanagement.domain.model;
 
+import lombok.Getter;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 
+@Getter
 public class Customer {
     private final UUID id;
     private final String name;
@@ -36,34 +39,6 @@ public class Customer {
         if (birthDate.isAfter(LocalDate.now().minusYears(18))) {
             throw new IllegalArgumentException("Customer must be at least 18 years old");
         }
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getIdentificationNumber() {
-        return identificationNumber;
-    }
-
-    public LocalDate getBirthDate() {
-        return birthDate;
-    }
-
-    public BigDecimal getMonthlyIncome() {
-        return monthlyIncome;
-    }
-
-    public String getEmploymentStatus() {
-        return employmentStatus;
-    }
-
-    public String getCreditScore() {
-        return creditScore;
     }
 
     public boolean isEligibleForLoan(BigDecimal requestedAmount) {
