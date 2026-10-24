@@ -1,4 +1,4 @@
-package com.loanmanagement.infrastructure.adapters;
+package com.loanmanagement.infrastructure.adapters.loan;
 
 import com.loanmanagement.domain.model.LoanApplication;
 import com.loanmanagement.domain.ports.LoanApplicationRepository;
