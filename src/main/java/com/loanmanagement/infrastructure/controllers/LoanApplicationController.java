@@ -5,6 +5,7 @@ import com.loanmanagement.domain.model.LoanApplication;
 import com.loanmanagement.infrastructure.controllers.dto.LoanApplicationRequest;
 import com.loanmanagement.infrastructure.controllers.dto.LoanApplicationResponse;
 import com.loanmanagement.infrastructure.controllers.mapper.LoanApplicationMapper;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,7 @@ public class LoanApplicationController {
     }
 
     @PostMapping
+    @RateLimiter(name = "loanApplication")
     public ResponseEntity<LoanApplicationResponse> createLoanApplication(
             @Valid @RequestBody LoanApplicationRequest request) {
         LoanApplication response = loanApplicationService.createLoanApplication(request);
@@ -41,6 +43,7 @@ public class LoanApplicationController {
     }
 
     @GetMapping("/{id}")
+    @RateLimiter(name = "loanApplication")
     public ResponseEntity<LoanApplicationResponse> getLoanApplicationById(@PathVariable UUID id) {
         return loanApplicationService.findById(id)
                 .map(loanApplicationMapper::toResponse)
@@ -49,6 +52,7 @@ public class LoanApplicationController {
     }
 
     @GetMapping("/customer/{customerId}")
+    @RateLimiter(name = "loanApplication")
     public ResponseEntity<List<LoanApplicationResponse>> getLoanApplicationsByCustomerId(
             @PathVariable UUID customerId) {
         List<LoanApplication> responses = loanApplicationService.findByCustomerId(customerId);
@@ -56,6 +60,7 @@ public class LoanApplicationController {
     }
 
     @GetMapping
+    @RateLimiter(name = "loanApplication")
     public ResponseEntity<List<LoanApplicationResponse>> getAllLoanApplications(
             @RequestParam(required = false) String status) {
         List<LoanApplication> responses = (status != null)
@@ -65,6 +70,7 @@ public class LoanApplicationController {
     }
 
     @PatchMapping("/{id}/status")
+    @RateLimiter(name = "loanApplication")
     public ResponseEntity<LoanApplicationResponse> updateLoanApplicationStatus(
             @PathVariable UUID id,
             @RequestParam String status) {
@@ -74,6 +80,7 @@ public class LoanApplicationController {
     }
 
     @DeleteMapping("/{id}")
+    @RateLimiter(name = "loanApplication")
     public ResponseEntity<Void> deleteLoanApplication(@PathVariable UUID id) {
         loanApplicationService.deleteById(id);
         return ResponseEntity.noContent().build();

@@ -14,8 +14,6 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
-  main:
-    allow-bean-definition-overriding: true
 
 server:
   port: 8080
@@ -44,17 +42,10 @@ management:
 resilience4j:
   circuitbreaker:
     instances:
-      riskEvaluation:
+      loanApplication:
         registerHealthIndicator: true
         failureRateThreshold: 50
         waitDurationInOpenState: 1000
         permittedNumberOfCallsInHalfOpenState: 3
-        slidingWindowSize: 5
-        slidingWindowType: COUNT_BASED
-      externalService:
-        registerHealthIndicator: true
-        failureRateThreshold: 40
-        waitDurationInOpenState: 2000
-        permittedNumberOfCallsInHalfOpenState: 2
         slidingWindowSize: 5
         slidingWindowType: COUNT_BASED
