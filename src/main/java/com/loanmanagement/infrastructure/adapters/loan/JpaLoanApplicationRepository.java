@@ -12,7 +12,6 @@ import java.util.UUID;
 
 @Repository
 public class JpaLoanApplicationRepository implements LoanApplicationRepository {
-
     private final LoanApplicationJpaRepository jpaRepository;
 
     public JpaLoanApplicationRepository(LoanApplicationJpaRepository jpaRepository) {

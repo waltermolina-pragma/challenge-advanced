@@ -2,6 +2,7 @@ package com.loanmanagement.infrastructure.controllers;
 
 import com.loanmanagement.application.usecases.LoanApplicationService;
 import com.loanmanagement.domain.model.LoanApplication;
+import com.loanmanagement.infrastructure.controllers.dto.ApproveWithConditionsRequest;
 import com.loanmanagement.infrastructure.controllers.dto.LoanApplicationRequest;
 import com.loanmanagement.infrastructure.controllers.dto.LoanApplicationResponse;
 import com.loanmanagement.infrastructure.controllers.mapper.LoanApplicationMapper;
@@ -11,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -69,14 +69,32 @@ public class LoanApplicationController {
         return ResponseEntity.ok(loanApplicationMapper.toResponseList(responses));
     }
 
-    @PatchMapping("/{id}/status")
+    @PostMapping("/{id}/evaluate")
+    public ResponseEntity<LoanApplicationResponse> evaluate(@PathVariable UUID id) {
+        LoanApplication evaluated = loanApplicationService.evaluateAndApprove(id);
+        return ResponseEntity.ok(loanApplicationMapper.toResponse(evaluated));
+    }
+
+    @PostMapping("/{id}/approve-with-conditions")
     @RateLimiter(name = "loanApplication")
-    public ResponseEntity<LoanApplicationResponse> updateLoanApplicationStatus(
+    public ResponseEntity<LoanApplicationResponse> approveWithConditions(
             @PathVariable UUID id,
-            @RequestParam String status) {
-        return loanApplicationService.updateStatus(id, status)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+            @Valid @RequestBody ApproveWithConditionsRequest request) {
+        LoanApplication approved =
+                loanApplicationService.approveWithConditions(
+                        id,
+                        request.approvedAmount(),
+                        request.conditions()
+                );
+        return ResponseEntity.ok(loanApplicationMapper.toResponse(approved));
+    }
+
+    @PostMapping("/{id}/cancel")
+    @RateLimiter(name = "loanApplication")
+    public ResponseEntity<Void> cancel(@PathVariable UUID id) {
+        boolean cancelled = loanApplicationService.cancelApplication(id);
+        return cancelled ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")

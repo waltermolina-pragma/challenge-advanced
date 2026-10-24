@@ -6,7 +6,6 @@ import com.loanmanagement.domain.model.RiskEvaluation;
 import com.loanmanagement.domain.ports.LoanApplicationRepository;
 import com.loanmanagement.domain.ports.RiskEvaluationService;
 import com.loanmanagement.infrastructure.controllers.dto.LoanApplicationRequest;
-import com.loanmanagement.infrastructure.controllers.dto.LoanApplicationResponse;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -44,16 +43,6 @@ public class LoanApplicationService {
 
     public List<LoanApplication> findAll() {
         return loanApplicationRepository.findAll();
-    }
-
-    public Optional<LoanApplicationResponse> updateStatus(UUID id, String status) {
-        /*try { Analizar agregar evaluación de riesgo para actualizar el estado
-            LoanApplication updated = loanApplicationRepository.updateStatus(id, status);
-            return Optional.of(LoanApplicationResponse.fromDomain(updated, updated.getCustomer(), updated.getRiskEvaluation()));
-        } catch (IllegalArgumentException e) {
-            return Optional.empty();
-        }*/
-        return null;
     }
 
     public void deleteById(UUID id) {
