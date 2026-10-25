@@ -6,10 +6,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static com.loanmanagement.domain.model.RiskEvaluationStatus.REQUIRES_REVIEW;
+
 @Component
 public class MockRiskEvaluationClient implements RiskEvaluationClient {
     @Override
     public ExternalRiskResponse evaluate(ExternalRiskRequest request) {
-        return new ExternalRiskResponse("APPROVED", 10, List.of());
+        return new ExternalRiskResponse(REQUIRES_REVIEW.name(), 500, List.of());
     }
 }
