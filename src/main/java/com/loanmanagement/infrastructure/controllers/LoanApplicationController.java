@@ -41,10 +41,7 @@ public class LoanApplicationController {
     @GetMapping("/{id}")
     @RateLimiter(name = "loanApplication")
     public ResponseEntity<LoanApplicationResponse> getLoanApplicationById(@PathVariable UUID id) {
-        return loanApplicationService.findById(id)
-                .map(loanApplicationMapper::toResponse)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(loanApplicationMapper.toResponse(loanApplicationService.findById(id)));
     }
 
     @GetMapping("/customer/{customerId}")
@@ -87,9 +84,8 @@ public class LoanApplicationController {
     @PostMapping("/{id}/cancel")
     @RateLimiter(name = "loanApplication")
     public ResponseEntity<Void> cancel(@PathVariable UUID id) {
-        boolean cancelled = loanApplicationService.cancelApplication(id);
-        return cancelled ? ResponseEntity.noContent().build()
-                : ResponseEntity.notFound().build();
+        loanApplicationService.cancelApplication(id);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")

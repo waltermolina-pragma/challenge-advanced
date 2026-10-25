@@ -5,6 +5,7 @@ import com.loanmanagement.domain.model.LoanApplication;
 import com.loanmanagement.domain.model.RiskEvaluation;
 import com.loanmanagement.domain.ports.LoanApplicationRepository;
 import com.loanmanagement.domain.ports.RiskEvaluationService;
+import com.loanmanagement.infrastructure.config.exception.ResourceNotFoundException;
 import com.loanmanagement.infrastructure.controllers.dto.LoanApplicationRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -43,8 +44,9 @@ public class LoanApplicationService {
         deleteApplication(id);
     }
 
-    public Optional<LoanApplication> findById(UUID id) {
-        return loanApplicationRepository.findById(id);
+    public LoanApplication findById(UUID id) {
+        return loanApplicationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Solicitud de préstamo no encontrada: " + id));
     }
 
     public List<LoanApplication> findByCustomerId(UUID customerId) {
@@ -56,9 +58,7 @@ public class LoanApplicationService {
     }
 
     public LoanApplication evaluateAndApprove(UUID applicationId) {
-        LoanApplication application = loanApplicationRepository.findById(applicationId)
-                .orElseThrow(() -> new IllegalArgumentException("Solicitud de préstamo no encontrada: " + applicationId));
-
+        LoanApplication application = findById(applicationId);
         if (!"PENDING_EVALUATION".equals(application.getStatus())) {
             throw new IllegalStateException("La solicitud no está en estado de evaluación: " + application.getStatus());
         }
@@ -87,8 +87,7 @@ public class LoanApplicationService {
     }
 
     public LoanApplication approveWithConditions(UUID applicationId, BigDecimal approvedAmount, String conditions) {
-        LoanApplication application = loanApplicationRepository.findById(applicationId)
-                .orElseThrow(() -> new IllegalArgumentException("Solicitud de préstamo no encontrada: " + applicationId));
+        LoanApplication application = findById(applicationId);
 
         if (!"REVIEW_REQUIRED".equals(application.getStatus())) {
             throw new IllegalStateException(
@@ -107,34 +106,21 @@ public class LoanApplicationService {
         return loanApplicationRepository.updateStatus(application.getId(), application.getStatus());
     }
 
-    public boolean cancelApplication(UUID applicationId) {
-        LoanApplication application = loanApplicationRepository.findById(applicationId)
-                .orElse(null);
-
-        if (application == null) {
-            return false;
-        }
-
+    public void cancelApplication(UUID applicationId) {
+        LoanApplication application = findById(applicationId);
         String currentStatus = application.getStatus();
         if ("APPROVED".equals(currentStatus) || "APPROVED_WITH_CONDITIONS".equals(currentStatus)) {
             throw new IllegalStateException("No se puede cancelar una solicitud ya aprobada");
         }
-
         loanApplicationRepository.updateStatus(applicationId, "CANCELLED");
-        return true;
     }
 
     public void deleteApplication(UUID applicationId) {
-        LoanApplication application = loanApplicationRepository.findById(applicationId)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "Solicitud de préstamo no encontrada: " + applicationId));
-
+        LoanApplication application = findById(applicationId);
         String currentStatus = application.getStatus();
         if ("APPROVED".equals(currentStatus) || "APPROVED_WITH_CONDITIONS".equals(currentStatus)) {
-            throw new IllegalStateException(
-                    "No se puede eliminar una solicitud aprobada. Cancele primero.");
+            throw new IllegalStateException("No se puede eliminar una solicitud aprobada. Cancele primero.");
         }
-
         loanApplicationRepository.deleteById(applicationId);
     }
 }
