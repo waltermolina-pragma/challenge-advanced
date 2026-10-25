@@ -37,22 +37,16 @@ public class LoanApplication {
     @Transient
     private Customer customer;
 
-    @Transient
     private String loanTerm;
 
-    @Transient
     private LocalDateTime approvalDate;
 
-    @Transient
     private String collateralType;
 
-    @Transient
     private BigDecimal collateralValue;
 
-    @Transient
     private String additionalNotes;
 
-    @Transient
     private String approvalConditions;
 
     public LoanApplication() {
