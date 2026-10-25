@@ -1,9 +1,6 @@
 package com.loanmanagement.domain.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,13 +28,11 @@ public class LoanApplication {
     private Integer approvedTerm;
     private BigDecimal interestRate;
 
-    @Transient
+    @OneToOne(cascade = CascadeType.ALL)
     private RiskEvaluation riskEvaluation;
 
     @Transient
     private Customer customer;
-
-    private String loanTerm;
 
     private LocalDateTime approvalDate;
 

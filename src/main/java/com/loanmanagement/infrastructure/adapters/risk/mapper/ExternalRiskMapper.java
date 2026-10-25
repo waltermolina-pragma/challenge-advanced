@@ -6,10 +6,7 @@ import com.loanmanagement.domain.model.RiskEvaluationStatus;
 import com.loanmanagement.domain.model.RiskLevel;
 import com.loanmanagement.infrastructure.adapters.risk.dto.ExternalRiskRequest;
 import com.loanmanagement.infrastructure.adapters.risk.dto.ExternalRiskResponse;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
 import java.util.UUID;
 
@@ -56,5 +53,10 @@ public interface ExternalRiskMapper {
             comments += ". Advertencias: " + String.join(", ", response.warnings());
         }
         return comments;
+    }
+
+    @AfterMapping
+    default void validateRiskEvaluation(@MappingTarget RiskEvaluation riskEvaluation) {
+        riskEvaluation.validate();
     }
 }

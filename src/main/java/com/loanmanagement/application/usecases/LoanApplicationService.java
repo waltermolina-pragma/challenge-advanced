@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -67,14 +68,17 @@ public class LoanApplicationService {
         if (customer != null && !customer.isEligibleForLoan(application.getRequestedAmount())) {
             application.setStatus("REJECTED");
             application.setRejectionReason("Cliente no cumple requisitos de elegibilidad");
-            return loanApplicationRepository.updateStatus(application.getId(), application.getStatus());
+            return loanApplicationRepository.save(application);
         }
 
         RiskEvaluation evaluation = riskEvaluationService.evaluateRisk(application);
+        application.setRiskEvaluation(evaluation);
 
         if (evaluation.isApproved() && !evaluation.isHighRisk()) {
             application.setStatus("APPROVED");
             application.setApprovedAmount(application.getRequestedAmount());
+            application.setApprovedTerm(application.getTermMonths());
+            application.setApprovalDate(LocalDateTime.now());
         } else if (evaluation.isHighRisk()) {
             application.setStatus("REJECTED");
             application.setRejectionReason("Riesgo demasiado alto según evaluación externa");
@@ -83,7 +87,7 @@ public class LoanApplicationService {
             application.setRejectionReason("Evaluación de riesgo requiere revisión manual");
         }
 
-        return loanApplicationRepository.updateStatus(application.getId(), application.getStatus());
+        return loanApplicationRepository.save(application);
     }
 
     public LoanApplication approveWithConditions(UUID applicationId, BigDecimal approvedAmount, String conditions) {
@@ -101,9 +105,10 @@ public class LoanApplicationService {
 
         application.setStatus("APPROVED_WITH_CONDITIONS");
         application.setApprovedAmount(approvedAmount);
+        application.setApplicationDate(LocalDateTime.now());
         application.setApprovalConditions(conditions);
 
-        return loanApplicationRepository.updateStatus(application.getId(), application.getStatus());
+        return loanApplicationRepository.save(application);
     }
 
     public void cancelApplication(UUID applicationId) {
