@@ -14,7 +14,7 @@ import java.util.List;
 )
 public interface LoanApplicationMapper {
     @Mapping(target = "customerName", source = "customer.name")
-    @Mapping(target = "customerIdentification", source = "customer.identification")
+    @Mapping(target = "customerIdentification", source = "customer.identificationNumber")
     @Mapping(target = "riskEvaluationStatus", source = "riskEvaluation.evaluationStatus")
     @Mapping(target = "riskLevel", source = "riskEvaluation.riskLevel")
     @Mapping(target = "evaluator", source = "riskEvaluation.evaluator")

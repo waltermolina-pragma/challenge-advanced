@@ -8,6 +8,7 @@ import com.loanmanagement.infrastructure.controllers.dto.LoanApplicationResponse
 import com.loanmanagement.infrastructure.controllers.mapper.LoanApplicationMapper;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,16 +24,11 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/loan-applications")
+@RequestMapping("/loan-applications")
+@RequiredArgsConstructor
 public class LoanApplicationController {
     private final LoanApplicationService loanApplicationService;
-
     private final LoanApplicationMapper loanApplicationMapper;
-
-    public LoanApplicationController(LoanApplicationService loanApplicationService, LoanApplicationMapper loanApplicationMapper) {
-        this.loanApplicationService = loanApplicationService;
-        this.loanApplicationMapper = loanApplicationMapper;
-    }
 
     @PostMapping
     @RateLimiter(name = "loanApplication")
@@ -80,12 +76,11 @@ public class LoanApplicationController {
     public ResponseEntity<LoanApplicationResponse> approveWithConditions(
             @PathVariable UUID id,
             @Valid @RequestBody ApproveWithConditionsRequest request) {
-        LoanApplication approved =
-                loanApplicationService.approveWithConditions(
-                        id,
-                        request.approvedAmount(),
-                        request.conditions()
-                );
+        LoanApplication approved = loanApplicationService.approveWithConditions(
+                id,
+                request.approvedAmount(),
+                request.conditions()
+        );
         return ResponseEntity.ok(loanApplicationMapper.toResponse(approved));
     }
 

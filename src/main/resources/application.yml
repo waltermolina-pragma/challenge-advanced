@@ -18,7 +18,7 @@ spring:
 server:
   port: 8080
   servlet:
-    context-path: /api/loans
+    context-path: /api/v1/loans
 
 logging:
   level:
