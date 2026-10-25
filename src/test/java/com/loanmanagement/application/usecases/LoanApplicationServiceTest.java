@@ -174,6 +174,28 @@ class LoanApplicationServiceTest {
     }
 
     @Test
+    void shouldEvaluateLoanApplicationWhenCustomerIsEligible() {
+        application.setCustomer(customer);
+
+        RiskEvaluation risk = risk(APPROVED.name(), LOW.name());
+
+        when(repository.findById(id)).thenReturn(Optional.of(application));
+        when(customer.isEligibleForLoan(application.getRequestedAmount()))
+                .thenReturn(true);
+        when(riskService.evaluateRisk(application)).thenReturn(risk);
+        when(repository.save(application)).thenReturn(application);
+
+        LoanApplication result = service.evaluateAndApprove(id);
+
+        assertEquals(APPROVED.name(), result.getStatus());
+        assertSame(risk, result.getRiskEvaluation());
+
+        verify(customer).isEligibleForLoan(application.getRequestedAmount());
+        verify(riskService).evaluateRisk(application);
+        verify(repository).save(application);
+    }
+
+    @Test
     void shouldRejectApprovalOfLoanApplicationWhenRiskIsHigh() {
         when(repository.findById(id)).thenReturn(Optional.of(application));
         when(riskService.evaluateRisk(application)).thenReturn(risk(APPROVED.name(), HIGH.name()));
@@ -299,6 +321,20 @@ class LoanApplicationServiceTest {
     }
 
     @Test
+    void shouldRejectCancellationWhenLoanIsApprovedWithConditions() {
+        application.setStatus(APPROVED_WITH_CONDITIONS.name());
+
+        when(repository.findById(id)).thenReturn(Optional.of(application));
+
+        assertThrows(
+                IllegalStateException.class,
+                () -> service.cancelApplication(id)
+        );
+
+        verify(repository, never()).updateStatus(any(), anyString());
+    }
+
+    @Test
     void shouldRejectCancelBecauseOfStatus() {
         application.setStatus(APPROVED.name());
 
@@ -324,6 +360,20 @@ class LoanApplicationServiceTest {
     @Test
     void shouldRejectDeleteBecauseOfStatus() {
         application.setStatus(APPROVED.name());
+
+        when(repository.findById(id)).thenReturn(Optional.of(application));
+
+        assertThrows(
+                IllegalStateException.class,
+                () -> service.deleteById(id)
+        );
+
+        verify(repository, never()).deleteById(any());
+    }
+
+    @Test
+    void shouldRejectDeletionWhenLoanIsApprovedWithConditions() {
+        application.setStatus(APPROVED_WITH_CONDITIONS.name());
 
         when(repository.findById(id)).thenReturn(Optional.of(application));
 

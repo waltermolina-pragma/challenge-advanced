@@ -134,4 +134,30 @@ class ExternalRiskMapperTest {
                 () -> mapper.toDomain(null, loanApplicationId)
         );
     }
+
+    @Test
+    void shouldBuildCommentsWhenWarningsAreNull() {
+        ExternalRiskResponse response = new ExternalRiskResponse(
+                "APPROVED",
+                750,
+                null
+        );
+
+        RiskEvaluation result = mapper.toDomain(response, UUID.randomUUID());
+
+        assertEquals("Puntuación de riesgo: 750", result.getComments());
+    }
+
+    @Test
+    void shouldBuildCommentsWhenWarningsAreEmpty() {
+        ExternalRiskResponse response = new ExternalRiskResponse(
+                "APPROVED",
+                750,
+                List.of()
+        );
+
+        RiskEvaluation result = mapper.toDomain(response, UUID.randomUUID());
+
+        assertEquals("Puntuación de riesgo: 750", result.getComments());
+    }
 }

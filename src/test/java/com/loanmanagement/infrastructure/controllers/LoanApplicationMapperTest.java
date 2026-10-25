@@ -60,6 +60,26 @@ class LoanApplicationMapperTest {
     }
 
     @Test
+    void shouldMapLoanApplicationWithNullOptionalFields() {
+        LoanApplication application = new LoanApplication(
+                UUID.randomUUID(),
+                UUID.randomUUID(),
+                new BigDecimal("50000"),
+                36,
+                "Vivienda"
+        );
+
+        application.setApplicationDate(null);
+        application.setTermMonths(null);
+
+        LoanApplicationResponse response = mapper.toResponse(application);
+
+        assertNotNull(response);
+        assertNull(response.applicationDate());
+        assertNull(response.termMonths());
+    }
+
+    @Test
     void shouldReturnNullWhenLoanApplicationIsNull() {
         assertNull(mapper.toResponse(null));
     }
