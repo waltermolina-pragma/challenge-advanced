@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static com.loanmanagement.domain.model.LoanStatus.*;
@@ -103,9 +102,10 @@ public class LoanApplicationService {
             throw new IllegalArgumentException("El monto aprobado no puede exceder el solicitado");
         }
 
-        application.setStatus("APPROVED_WITH_CONDITIONS");
+        application.setStatus(APPROVED_WITH_CONDITIONS.name());
         application.setApprovedAmount(approvedAmount);
-        application.setApplicationDate(LocalDateTime.now());
+        application.setApprovedTerm(application.getTermMonths());
+        application.setApprovalDate(LocalDateTime.now());
         application.setApprovalConditions(conditions);
 
         return loanApplicationRepository.save(application);
