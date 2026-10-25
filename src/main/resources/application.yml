@@ -2,9 +2,9 @@ spring:
   application:
     name: loan-management
   datasource:
-    url: jdbc:postgresql://localhost:5432/loan_db
-    username: loan_user
-    password: loan_pass
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/challengue}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:admin123}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -38,6 +38,16 @@ management:
   health:
     circuitbreakers:
       enabled: true
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: Loan Management
+    description: API REST para gestión de solicitudes de préstamos
+    version: 1.0.0
+    java: 21
 
 resilience4j:
   circuitbreaker:
@@ -49,3 +59,9 @@ resilience4j:
         permittedNumberOfCallsInHalfOpenState: 3
         slidingWindowSize: 5
         slidingWindowType: COUNT_BASED
+  ratelimiter:
+    instances:
+      loanApplication:
+        limitForPeriod: ${LIMIT_FOR_PERIOD:1}
+        limitRefreshPeriod: ${LIMIT_REFRESH_FOR_PERIOD:10s}
+        timeoutDuration: ${TIMEOUT_DURATION:0s}
