@@ -7,7 +7,6 @@ import com.loanmanagement.domain.ports.LoanApplicationRepository;
 import com.loanmanagement.domain.ports.RiskEvaluationService;
 import com.loanmanagement.infrastructure.config.exception.ResourceNotFoundException;
 import com.loanmanagement.infrastructure.controllers.dto.LoanApplicationRequest;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +23,8 @@ import java.util.UUID;
 import static com.loanmanagement.domain.model.LoanStatus.*;
 import static com.loanmanagement.domain.model.RiskLevel.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

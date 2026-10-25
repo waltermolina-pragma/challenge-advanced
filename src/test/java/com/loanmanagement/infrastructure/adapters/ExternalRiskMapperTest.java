@@ -5,7 +5,6 @@ import com.loanmanagement.domain.model.LoanApplication;
 import com.loanmanagement.domain.model.RiskEvaluation;
 import com.loanmanagement.infrastructure.adapters.risk.dto.ExternalRiskRequest;
 import com.loanmanagement.infrastructure.adapters.risk.dto.ExternalRiskResponse;
-
 import com.loanmanagement.infrastructure.adapters.risk.mapper.ExternalRiskMapper;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;

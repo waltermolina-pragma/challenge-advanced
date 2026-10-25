@@ -3,12 +3,11 @@ package com.loanmanagement.infrastructure.adapters;
 import com.loanmanagement.infrastructure.adapters.risk.client.MockRiskEvaluationClient;
 import com.loanmanagement.infrastructure.adapters.risk.dto.ExternalRiskRequest;
 import com.loanmanagement.infrastructure.adapters.risk.dto.ExternalRiskResponse;
-
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static com.loanmanagement.domain.model.RiskEvaluationStatus.*;
+import static com.loanmanagement.domain.model.RiskEvaluationStatus.REQUIRES_REVIEW;
 import static org.junit.jupiter.api.Assertions.*;
 
 class MockRiskEvaluationClientTest {

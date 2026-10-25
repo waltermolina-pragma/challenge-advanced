@@ -4,7 +4,6 @@ import com.loanmanagement.domain.model.Customer;
 import com.loanmanagement.domain.model.LoanApplication;
 import com.loanmanagement.domain.model.RiskEvaluation;
 import com.loanmanagement.infrastructure.controllers.dto.LoanApplicationResponse;
-
 import com.loanmanagement.infrastructure.controllers.mapper.LoanApplicationMapper;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -14,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static com.loanmanagement.domain.model.LoanStatus.*;
+import static com.loanmanagement.domain.model.LoanStatus.PENDING_EVALUATION;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

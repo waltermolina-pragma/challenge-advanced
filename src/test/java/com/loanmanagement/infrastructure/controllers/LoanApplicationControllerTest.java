@@ -7,7 +7,6 @@ import com.loanmanagement.infrastructure.config.exception.ResourceNotFoundExcept
 import com.loanmanagement.infrastructure.controllers.dto.LoanApplicationRequest;
 import com.loanmanagement.infrastructure.controllers.dto.LoanApplicationResponse;
 import com.loanmanagement.infrastructure.controllers.mapper.LoanApplicationMapper;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -23,11 +22,14 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-import static com.loanmanagement.domain.model.LoanStatus.*;
-import static org.mockito.ArgumentMatchers.*;
+import static com.loanmanagement.domain.model.LoanStatus.APPROVED;
+import static com.loanmanagement.domain.model.LoanStatus.PENDING_EVALUATION;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(LoanApplicationController.class)
 class LoanApplicationControllerTest {

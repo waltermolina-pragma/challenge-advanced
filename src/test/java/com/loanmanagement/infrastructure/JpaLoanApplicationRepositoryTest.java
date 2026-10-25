@@ -3,7 +3,6 @@ package com.loanmanagement.infrastructure;
 import com.loanmanagement.domain.model.LoanApplication;
 import com.loanmanagement.infrastructure.adapters.loan.JpaLoanApplicationRepository;
 import com.loanmanagement.infrastructure.repositories.LoanApplicationJpaRepository;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +15,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.loanmanagement.domain.model.LoanStatus.*;
+import static com.loanmanagement.domain.model.LoanStatus.CANCELLED;
+import static com.loanmanagement.domain.model.LoanStatus.PENDING_EVALUATION;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 

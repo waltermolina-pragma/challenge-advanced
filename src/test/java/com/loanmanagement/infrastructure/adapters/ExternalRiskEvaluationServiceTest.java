@@ -7,7 +7,6 @@ import com.loanmanagement.infrastructure.adapters.risk.client.RiskEvaluationClie
 import com.loanmanagement.infrastructure.adapters.risk.dto.ExternalRiskRequest;
 import com.loanmanagement.infrastructure.adapters.risk.dto.ExternalRiskResponse;
 import com.loanmanagement.infrastructure.adapters.risk.mapper.ExternalRiskMapper;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,7 +17,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
