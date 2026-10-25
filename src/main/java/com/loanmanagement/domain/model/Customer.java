@@ -1,10 +1,13 @@
 package com.loanmanagement.domain.model;
 
+import lombok.Getter;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 
+@Getter
 public class Customer {
     private final UUID id;
     private final String name;
@@ -38,34 +41,6 @@ public class Customer {
         }
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getIdentificationNumber() {
-        return identificationNumber;
-    }
-
-    public LocalDate getBirthDate() {
-        return birthDate;
-    }
-
-    public BigDecimal getMonthlyIncome() {
-        return monthlyIncome;
-    }
-
-    public String getEmploymentStatus() {
-        return employmentStatus;
-    }
-
-    public String getCreditScore() {
-        return creditScore;
-    }
-
     public boolean isEligibleForLoan(BigDecimal requestedAmount) {
         if (requestedAmount.compareTo(BigDecimal.ZERO) <= 0) {
             return false;
@@ -82,18 +57,5 @@ public class Customer {
 
         BigDecimal maxAllowedAmount = monthlyIncome.multiply(new BigDecimal("10"));
         return requestedAmount.compareTo(maxAllowedAmount) <= 0;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Customer customer = (Customer) o;
-        return id.equals(customer.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 }

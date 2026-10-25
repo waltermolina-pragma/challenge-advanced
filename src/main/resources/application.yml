@@ -2,9 +2,9 @@ spring:
   application:
     name: loan-management
   datasource:
-    url: jdbc:postgresql://localhost:5432/loan_db
-    username: loan_user
-    password: loan_pass
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/challengue}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:admin123}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -14,13 +14,11 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
-  main:
-    allow-bean-definition-overriding: true
 
 server:
   port: 8080
   servlet:
-    context-path: /api/loans
+    context-path: /api/v1/loans
 
 logging:
   level:
@@ -40,21 +38,30 @@ management:
   health:
     circuitbreakers:
       enabled: true
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: Loan Management
+    description: API REST para gestión de solicitudes de préstamos
+    version: 1.0.0
+    java: 21
 
 resilience4j:
   circuitbreaker:
     instances:
-      riskEvaluation:
+      loanApplication:
         registerHealthIndicator: true
         failureRateThreshold: 50
         waitDurationInOpenState: 1000
         permittedNumberOfCallsInHalfOpenState: 3
         slidingWindowSize: 5
         slidingWindowType: COUNT_BASED
-      externalService:
-        registerHealthIndicator: true
-        failureRateThreshold: 40
-        waitDurationInOpenState: 2000
-        permittedNumberOfCallsInHalfOpenState: 2
-        slidingWindowSize: 5
-        slidingWindowType: COUNT_BASED
+  ratelimiter:
+    instances:
+      loanApplication:
+        limitForPeriod: ${LIMIT_FOR_PERIOD:1}
+        limitRefreshPeriod: ${LIMIT_REFRESH_FOR_PERIOD:10s}
+        timeoutDuration: ${TIMEOUT_DURATION:0s}
