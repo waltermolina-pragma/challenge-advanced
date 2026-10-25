@@ -51,17 +51,4 @@ public class RiskEvaluation {
     public boolean isHighRisk() {
         return "HIGH".equalsIgnoreCase(riskLevel);
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        RiskEvaluation that = (RiskEvaluation) o;
-        return id.equals(that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }

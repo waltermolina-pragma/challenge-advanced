@@ -1,5 +1,6 @@
 package com.loanmanagement.application.usecases;
 
+import com.loanmanagement.domain.model.Customer;
 import com.loanmanagement.domain.model.LoanApplication;
 import com.loanmanagement.domain.model.RiskEvaluation;
 import com.loanmanagement.domain.ports.LoanApplicationRepository;
@@ -41,6 +42,9 @@ class LoanApplicationServiceTest {
     private UUID id;
     private UUID customerId;
     private LoanApplication application;
+
+    @Mock
+    private Customer customer;
 
     @BeforeEach
     void setUp() {
@@ -192,6 +196,26 @@ class LoanApplicationServiceTest {
         LoanApplication result = service.evaluateAndApprove(id);
 
         assertEquals(REVIEW_REQUIRED.name(), result.getStatus());
+    }
+
+    @Test
+    void shouldRejectLoanApplicationWhenCustomerIsNotEligible() {
+        application.setCustomer(customer);
+
+        when(repository.findById(id)).thenReturn(Optional.of(application));
+        when(customer.isEligibleForLoan(application.getRequestedAmount())).thenReturn(false);
+        when(repository.save(application)).thenReturn(application);
+
+        LoanApplication result = service.evaluateAndApprove(id);
+
+        assertEquals(REJECTED.name(), result.getStatus());
+        assertEquals(
+                "Cliente no cumple requisitos de elegibilidad",
+                result.getRejectionReason()
+        );
+
+        verify(repository).save(application);
+        verifyNoInteractions(riskService);
     }
 
     @Test

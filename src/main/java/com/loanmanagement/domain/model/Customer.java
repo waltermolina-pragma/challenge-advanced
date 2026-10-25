@@ -58,17 +58,4 @@ public class Customer {
         BigDecimal maxAllowedAmount = monthlyIncome.multiply(new BigDecimal("10"));
         return requestedAmount.compareTo(maxAllowedAmount) <= 0;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Customer customer = (Customer) o;
-        return id.equals(customer.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }
