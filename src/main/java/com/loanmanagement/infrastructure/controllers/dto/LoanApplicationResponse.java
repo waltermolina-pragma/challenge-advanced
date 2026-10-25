@@ -11,7 +11,7 @@ public record LoanApplicationResponse(
         String customerName,
         String customerIdentification,
         BigDecimal requestedAmount,
-        String loanTerm,
+        String termMonths,
         String purpose,
         String status,
         LocalDate applicationDate,
